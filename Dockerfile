@@ -52,7 +52,7 @@ RUN python3 -m pip install --no-cache-dir --upgrade pip \
 && python3 -m pip install --no-cache-dir -r requirements-cpython.txt
 
 RUN apt-get update -qq \
- && apt install -qq gfortran libopenblas-dev liblapack-dev pkg-config libgeos-dev
+ && apt-get install -qq gfortran libopenblas-dev liblapack-dev pkg-config libgeos-dev
 
 COPY requirements-pypy.txt /tmp/requirements-pypy.txt
 RUN pypy3 -m pip install --no-cache-dir --upgrade pip \
