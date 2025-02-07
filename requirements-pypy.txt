@@ -8,7 +8,7 @@ more-itertools
 bitarray
 PuLP
 mpmath
-pandas
+# pandas
 z3-solver
 # scikit-learn
 ac-library-python
