@@ -61,7 +61,7 @@ RUN pypy3 -m pip install --no-cache-dir --upgrade pip \
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # 作問用のパッケージをインストールする
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-RUN python3 -m pip install --no-cache-dir rime statements-manager
+RUN python3 -m pip install --no-cache-dir rime statements-manager beautifulsoup4
 
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # 不要なパッケージファイルを削除する
