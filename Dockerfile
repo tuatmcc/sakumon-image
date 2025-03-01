@@ -62,6 +62,7 @@ RUN apt-get update -qq \
 
 COPY requirements-pypy.txt /tmp/requirements-pypy.txt
 RUN pypy3 -m pip install --no-cache-dir --upgrade pip \
+&& pypy3 -m pip install --no-cache-dir cython \
 && pypy3 -m pip install --no-cache-dir --config-settings --confirm-license= --verbose -r requirements-pypy.txt
 
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
