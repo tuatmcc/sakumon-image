@@ -9,7 +9,7 @@ bitarray==2.6.2
 PuLP==2.7.0
 mpmath==1.2.1
 pandas==1.5.2
-z3-solver==4.12.1.0
+# z3-solver==4.12.1.0
 scikit-learn==1.2.0
 ortools==9.5.2237
 ac-library-python

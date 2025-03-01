@@ -9,7 +9,7 @@ bitarray
 PuLP
 mpmath
 # pandas
-z3-solver
+# z3-solver
 # scikit-learn
 ac-library-python
 # cppyy==2.4.1
