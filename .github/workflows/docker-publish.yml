@@ -2,7 +2,6 @@ name: Create and publish a Docker image
 
 on:
   push:
-    branches: ['main']
 
 env:
   REGISTRY: ghcr.io
@@ -28,7 +27,7 @@ jobs:
       - name: Build and push (amd64)
         uses: docker/build-push-action@v6
         with:
-          push: true
+          push: ${{ github.ref == 'refs/heads/main' }}
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:amd64
           platforms: linux/amd64
 
@@ -51,11 +50,12 @@ jobs:
       - name: Build and push (arm64)
         uses: docker/build-push-action@v6
         with:
-          push: true
+          push: ${{ github.ref == 'refs/heads/main' }}
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:arm64
           platforms: linux/arm64
 
   create-manifest:
+    if: ${{ github.ref == 'refs/heads/main' }}
     needs: [build-and-push-amd64, build-and-push-arm64]
     runs-on: ubuntu-latest
     steps:

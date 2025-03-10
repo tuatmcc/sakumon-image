@@ -1,9 +1,6 @@
 FROM python:3.11.11-bookworm AS python_base
 FROM pypy:bookworm
 
-#━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-# 必要な共有ライブラリを pythn_base からコピーする
-#━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 COPY --from=python_base /usr/local/bin/python3 /usr/local/bin/python3
 COPY --from=python_base /usr/local/lib/python3.11 /usr/local/lib/python3.11
 COPY --from=python_base /usr/local/include/python3.11 /usr/local/include/python3.11
@@ -19,7 +16,7 @@ ENV TZ=Asia/Tokyo
 RUN apt-get update -qq \
  && apt-get install -qq zsh time tree git curl nano vim tmux ruby ca-certificates
 
-#━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+ #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # プロンプトの見た目をいい感じにする
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 RUN curl -sS https://starship.rs/install.sh | sh -s -- --yes \
@@ -42,12 +39,15 @@ RUN apt-get install -qq software-properties-common python3-launchpadlib \
  && update-alternatives --config gcc \
  && update-alternatives --config g++
 
-#━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-# ac-library, testlib をインストールする
-#━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# ac-library のインストール
 RUN git clone https://github.com/atcoder/ac-library.git /lib/ac-library
 RUN git clone https://github.com/MikeMirzayanov/testlib /lib/testlib
 ENV CPLUS_INCLUDE_PATH="/lib/ac-library:/lib/testlib:$CPLUS_INCLUDE_PATH"
+
+#━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# gmpy2 用に gmp, mpfr, mpc をインストールする
+#━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+RUN apt-get install -qq libgmp-dev libmpfr-dev libmpc-dev
 
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # AtCoder の環境に存在するパッケージをインストールする
@@ -62,6 +62,7 @@ RUN apt-get update -qq \
 
 COPY requirements-pypy.txt /tmp/requirements-pypy.txt
 RUN pypy3 -m pip install --no-cache-dir --upgrade pip \
+&& pypy3 -m pip install --no-cache-dir cython \
 && pypy3 -m pip install --no-cache-dir --config-settings --confirm-license= --verbose -r requirements-pypy.txt
 
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
