@@ -16,7 +16,7 @@ ENV TZ=Asia/Tokyo
 RUN apt-get update -qq \
  && apt-get install -qq zsh time tree git curl nano vim tmux ruby ca-certificates
 
- #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+#━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # プロンプトの見た目をいい感じにする
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 RUN curl -sS https://starship.rs/install.sh | sh -s -- --yes \
@@ -62,7 +62,7 @@ RUN apt-get update -qq \
 
 COPY requirements-pypy.txt /tmp/requirements-pypy.txt
 RUN pypy3 -m pip install --no-cache-dir --upgrade pip \
-&& pypy3 -m pip install --no-cache-dir cython \
+&& pypy3 -m pip install --no-cache-dir cython cython3 \
 && pypy3 -m pip install --no-cache-dir --config-settings --confirm-license= --verbose -r requirements-pypy.txt
 
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
