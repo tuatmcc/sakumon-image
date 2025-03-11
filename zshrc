@@ -8,5 +8,4 @@ compinit
 zstyle ':completion:*:default' menu select=1
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'
 
-source ~/.zsh/zsh-autosuggestions/zsh-autosuggestions.zsh
 source /root/.zsh/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
