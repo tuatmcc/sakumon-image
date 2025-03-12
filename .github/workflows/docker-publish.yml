@@ -31,45 +31,9 @@ jobs:
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:amd64
           platforms: linux/amd64
 
-  build-and-push-slim:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Log in to the Container registry
-        uses: docker/login-action@v3
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v3
-
-      - name: Build the Docker image
-        uses: docker/build-push-action@v4
-        with:
-          push: false
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:slim
-
-      - name: Slim the Image
-        uses: kitabisa/docker-slim-action@v1
-        env:
-          DSLIM_HTTP_PROBE: false
-        with:
-          target: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:slim
-          tag: "slim-slim"
-
-      - name: Push
-        run: |
-          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
-            docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:slim
-          fi
-
   create-manifest:
     if: ${{ github.ref == 'refs/heads/main' }}
-    needs: [build-and-push-amd64, build-and-push-slim]
+    needs: [build-and-push-amd64]
     runs-on: ubuntu-latest
     steps:
       - name: Log in to the Container registry
@@ -82,6 +46,5 @@ jobs:
       - name: Create and push manifests
         run: |
           docker manifest create ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest \
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:amd64 \
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:slim
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:amd64
           docker manifest push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
