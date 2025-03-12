@@ -52,8 +52,8 @@ jobs:
         env:
           DSLIM_HTTP_PROBE: false
         with:
-          push: ${{ github.ref == 'refs/heads/main' }}
-          tag: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:slim
+          target: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:slim
+          tag: "slim"
 
       - name: Push
         run: docker image push "${{ github.ref == 'refs/heads/main' }}" --all-tags
