@@ -47,16 +47,25 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build (slim)
+      - name: Build the Docker image
+        uses: docker/build-push-action@v4
+        with:
+          push: false
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:slim
+
+      - name: Slim the Image
         uses: kitabisa/docker-slim-action@v1
         env:
           DSLIM_HTTP_PROBE: false
         with:
           target: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:slim
-          tag: "slim"
+          tag: "slim-slim"
 
       - name: Push
-        run: docker image push "${{ github.ref == 'refs/heads/main' }}" --all-tags
+        run: |
+          if [ "${{ github.ref }}" = "refs/heads/main" ]; then
+            docker push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:slim
+          fi
 
   create-manifest:
     if: ${{ github.ref == 'refs/heads/main' }}
