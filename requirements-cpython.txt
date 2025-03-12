@@ -21,3 +21,7 @@ setuptools==66.0.0
 gmpy2==2.1.5
 numba==0.57.0
 rich==13.9.4
+dacite==1.9.2
+--index-url https://test.pypi.org/simple/
+--extra-index-url https://pypi.org/simple/
+mofeapi==0.1.2
