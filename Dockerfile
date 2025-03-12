@@ -13,8 +13,26 @@ ENV LANG=C.UTF-8
 ENV LANGUAGE=en_US:
 ENV TZ=Asia/Tokyo
 
+#━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# 諸々のインストール
+#
+# C++ の環境を整える
+# gmpy2 用に gmp, mpfr, mpc をインストールする
+#━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 RUN apt-get update -qq \
- && apt-get install -qq zsh time tree git curl nano vim tmux ruby ca-certificates
+ && apt-get install -qq \
+    zsh time tree git curl nano vim ca-certificates \
+    nodejs npm \
+    libgmp-dev libmpfr-dev libmpc-dev \
+ && apt-get install -qq software-properties-common python3-launchpadlib \
+ && add-apt-repository ppa:ubuntu-toolchain-r/test \
+ && apt-get update -qq \
+ && apt-get install -qq gcc-12 g++-12 \
+ && update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-12 100 \
+ && update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-12 100 \
+ && update-alternatives --config gcc \
+ && update-alternatives --config g++ \
+ && rm -rf /var/lib/apt/lists/*
 
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # Zsh をいい感じにする
@@ -39,25 +57,15 @@ RUN chsh -s /bin/zsh
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # textlint
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-RUN apt-get install -qq nodejs npm
-RUN npm i -g textlint
-RUN npm i -g textlint-rule-preset-ja-technical-writing
-RUN npm i -g textlint-rule-preset-ja-spacing
-RUN npm i -g textlint-filter-rule-comments
-RUN npm i -g textlint-filter-rule-allowlist
+RUN npm i -g textlint \
+    textlint-rule-preset-ja-technical-writing \
+    textlint-rule-preset-ja-spacing \
+    textlint-filter-rule-comments \
+    textlint-filter-rule-allowlist
 
 
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-# C++ の環境を整える
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-RUN apt-get install -qq software-properties-common python3-launchpadlib \
- && add-apt-repository ppa:ubuntu-toolchain-r/test \
- && apt-get update -qq \
- && apt-get install -qq gcc-12 g++-12 \
- && update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-12 100 \
- && update-alternatives --install /usr/bin/g++ g++ /usr/bin/g++-12 100 \
- && update-alternatives --config gcc \
- && update-alternatives --config g++
 
 
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -69,9 +77,7 @@ ENV CPLUS_INCLUDE_PATH="/lib/ac-library:/lib/testlib:$CPLUS_INCLUDE_PATH"
 
 
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-# gmpy2 用に gmp, mpfr, mpc をインストールする
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-RUN apt-get install -qq libgmp-dev libmpfr-dev libmpc-dev
 
 
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
@@ -94,7 +100,10 @@ RUN pypy3 -m pip install --no-cache-dir --upgrade pip \
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # Rust のインストール
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain none \
+    && /root/.cargo/bin/rustup install stable \
+    && /root/.cargo/bin/rustup component remove cargo rustfmt clippy rust-docs
+
 ENV PATH="/root/.cargo/bin:$PATH"
 
 

@@ -31,7 +31,7 @@ jobs:
           tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:amd64
           platforms: linux/amd64
 
-  build-and-push-arm64:
+  build-and-push-slim:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -47,16 +47,20 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Build and push (arm64)
-        uses: docker/build-push-action@v6
+      - name: Build (slim)
+        uses: kitabisa/docker-slim-action@v1
+        env:
+          DSLIM_HTTP_PROBE: false
         with:
           push: ${{ github.ref == 'refs/heads/main' }}
-          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:arm64
-          platforms: linux/arm64
+          tag: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:slim
+
+      - name: Push
+        run: docker image push "${{ github.ref == 'refs/heads/main' }}" --all-tags
 
   create-manifest:
     if: ${{ github.ref == 'refs/heads/main' }}
-    needs: [build-and-push-amd64, build-and-push-arm64]
+    needs: [build-and-push-amd64, build-and-push-slim]
     runs-on: ubuntu-latest
     steps:
       - name: Log in to the Container registry
@@ -66,9 +70,9 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Create and push multi-arch manifest
+      - name: Create and push manifests
         run: |
           docker manifest create ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest \
             ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:amd64 \
-            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:arm64
+            ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:slim
           docker manifest push ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
