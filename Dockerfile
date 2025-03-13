@@ -92,7 +92,7 @@ RUN pypy3 -m pip install --no-cache-dir --upgrade pip \
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 # Rust のインストール
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-RUN apt-get install rustc
+RUN apt-get install -qq -y rustc
 # RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain stable
 
 # ENV PATH="/root/.cargo/bin:$PATH"
