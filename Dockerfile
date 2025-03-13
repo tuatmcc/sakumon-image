@@ -22,7 +22,7 @@ ENV TZ=Asia/Tokyo
 RUN apt-get update -qq \
  && apt-get install -qq \
     zsh time tree git curl nano vim ca-certificates \
-    nodejs npm \
+    nodejs npm rustc \
     libgmp-dev libmpfr-dev libmpc-dev \
  && apt-get install -qq software-properties-common python3-launchpadlib \
  && add-apt-repository ppa:ubuntu-toolchain-r/test \
@@ -87,16 +87,6 @@ COPY requirements-pypy.txt /tmp/requirements-pypy.txt
 RUN pypy3 -m pip install --no-cache-dir --upgrade pip \
 && pypy3 -m pip install --no-cache-dir cython \
 && pypy3 -m pip install --no-cache-dir --config-settings --confirm-license= --verbose -r requirements-pypy.txt
-
-
-#━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-# Rust のインストール
-#━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-RUN curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y --default-toolchain none \
-    && /root/.cargo/bin/rustup install stable \
-    && /root/.cargo/bin/rustup component remove cargo rustfmt clippy rust-docs
-
-ENV PATH="/root/.cargo/bin:$PATH"
 
 
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
