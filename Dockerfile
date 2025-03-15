@@ -55,13 +55,14 @@ RUN chsh -s /bin/zsh
 
 
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-# textlint
+# npm (textlint & Task)
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 RUN npm i -g textlint \
     textlint-rule-preset-ja-technical-writing \
     textlint-rule-preset-ja-spacing \
     textlint-filter-rule-comments \
-    textlint-filter-rule-allowlist
+    textlint-filter-rule-allowlist \
+    @go-task/cli
 
 
 #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
